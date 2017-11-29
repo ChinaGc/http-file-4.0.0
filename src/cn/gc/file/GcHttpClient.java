@@ -16,7 +16,7 @@ import cn.gc.file.util.FileHelper;
 
 /**
  * @ClassName: GcHttpCllient
- * @Description: 基于HttpUrlConnection实现http请求
+ * @Description: 基于HttpUrlConnection(s)实现http请求
  * @author 郭灿
  * @date 2017年11月28日 上午9:41:03
  */
