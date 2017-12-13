@@ -39,7 +39,7 @@ public class GcHttpClient {
     }
 
     // 单例
-    private static GcHttpClient getInstance() {
+    public static GcHttpClient getInstance() {
         if (gcHttpClient == null) {
             gcHttpClient = new GcHttpClient();
         }
