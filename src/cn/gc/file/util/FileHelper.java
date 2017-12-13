@@ -145,7 +145,7 @@ public class FileHelper {
      */
     public boolean writeText(String text, File textFile, boolean isAppend) {
         try {
-            FileWriter writer = new FileWriter(textFile, true);
+            FileWriter writer = new FileWriter(textFile, isAppend);
             writer.write(text);
             writer.flush();
             writer.close();
