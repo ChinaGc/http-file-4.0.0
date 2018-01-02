@@ -26,7 +26,7 @@ public class GcHttpClient {
     private static GcHttpClient gcHttpClient = null;
 
     // http请求头
-    private Map<String, String> headers = null;
+    private Map<String, Object> headers = null;
 
     private String encoding = null;
 
@@ -37,7 +37,7 @@ public class GcHttpClient {
     private Map<String, List<String>> responseHeader = null;
 
     private GcHttpClient() {
-        headers = new HashMap<String, String>();
+        headers = new HashMap<String, Object>();
         fileHelper = FileHelper.getInstance();
     }
 
@@ -67,17 +67,17 @@ public class GcHttpClient {
     }
 
     // 发送HttpGet请求
-    public String sendGETRequest(String path, Map<String, String> params) throws MalformedURLException, IOException {
+    public String sendGETRequest(String path, Map<String, Object> params) throws MalformedURLException, IOException {
         StringBuilder url = new StringBuilder(path);
         url.append("?");
         if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() != null) {
                     url.append(entry.getKey()).append("=");
                     if (encoding == null) {
-                        url.append(URLEncoder.encode(entry.getValue()));
+                        url.append(URLEncoder.encode(entry.getValue().toString()));
                     } else {
-                        url.append(URLEncoder.encode(entry.getValue(), encoding));
+                        url.append(URLEncoder.encode(entry.getValue().toString(), encoding));
                     }
                     url.append("&");
                 }
@@ -98,8 +98,8 @@ public class GcHttpClient {
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
         if (headers != null && !headers.isEmpty()) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                conn.setRequestProperty(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                conn.setRequestProperty(entry.getKey(), entry.getValue().toString());
             }
         }
         conn.connect();// 建立实际的连接
@@ -115,18 +115,18 @@ public class GcHttpClient {
     }
 
     // 发送HttpPost请求
-    public String sendPOSTRequest(String path, Map<String, String> params) throws MalformedURLException, IOException {
+    public String sendPOSTRequest(String path, Map<String, Object> params) throws MalformedURLException, IOException {
         // 拼接参数
         StringBuilder data = new StringBuilder();
         if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() != null) {
                     data.append(entry.getKey()).append("=");
                     if (encoding == null) {
                         // data.append(entry.getValue());//
                         // body参数不需要进行URLEncoder
                     } else {
-                        data.append(URLEncoder.encode(entry.getValue(), encoding));
+                        data.append(URLEncoder.encode(entry.getValue().toString(), encoding));
                     }
                     data.append("&");
                 }
@@ -151,8 +151,8 @@ public class GcHttpClient {
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
         if (headers != null && !headers.isEmpty()) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                conn.setRequestProperty(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                conn.setRequestProperty(entry.getKey(), entry.getValue().toString());
             }
         }
         OutputStream outStream = conn.getOutputStream();
@@ -187,8 +187,8 @@ public class GcHttpClient {
         conn.setRequestProperty("Connection", "Keep-Alive");
         conn.setRequestProperty("Content-Type", "application/json");
         if (headers != null && !headers.isEmpty()) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                conn.setRequestProperty(entry.getKey(), entry.getValue());
+            for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                conn.setRequestProperty(entry.getKey(),entry.getValue().toString());
             }
         }
         OutputStream outStream = conn.getOutputStream();
