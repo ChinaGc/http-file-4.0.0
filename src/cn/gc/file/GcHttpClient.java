@@ -23,8 +23,6 @@ import cn.gc.file.util.FileHelper;
  */
 public class GcHttpClient {
 
-    private static GcHttpClient gcHttpClient = null;
-
     // http请求头
     private Map<String, Object> headers = null;
 
@@ -41,12 +39,9 @@ public class GcHttpClient {
         fileHelper = FileHelper.getInstance();
     }
 
-    // 单例
+    // 多例
     public static GcHttpClient getInstance() {
-        if (gcHttpClient == null) {
-            gcHttpClient = new GcHttpClient();
-        }
-        return gcHttpClient;
+        return new GcHttpClient();
     }
 
     // 网络路径读取字节数据
@@ -188,7 +183,7 @@ public class GcHttpClient {
         conn.setRequestProperty("Content-Type", "application/json");
         if (headers != null && !headers.isEmpty()) {
             for (Map.Entry<String, Object> entry : headers.entrySet()) {
-                conn.setRequestProperty(entry.getKey(),entry.getValue().toString());
+                conn.setRequestProperty(entry.getKey(), entry.getValue().toString());
             }
         }
         OutputStream outStream = conn.getOutputStream();
