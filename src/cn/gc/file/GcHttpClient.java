@@ -26,7 +26,9 @@ public class GcHttpClient {
     // http请求头
     private Map<String, Object> headers = null;
 
-    private String encoding = null;
+    private String urlencoding = "UTF-8";
+    
+    private String defaultEncoding = "UTF-8";
 
     private FileHelper fileHelper = null;
 
@@ -69,10 +71,10 @@ public class GcHttpClient {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() != null) {
                     url.append(entry.getKey()).append("=");
-                    if (encoding == null) {
+                    if (urlencoding == null) {
                         url.append(URLEncoder.encode(entry.getValue().toString()));
                     } else {
-                        url.append(URLEncoder.encode(entry.getValue().toString(), encoding));
+                        url.append(URLEncoder.encode(entry.getValue().toString(), urlencoding));
                     }
                     url.append("&");
                 }
@@ -104,7 +106,7 @@ public class GcHttpClient {
         if (responseCode == 200) {
             InputStream in = conn.getInputStream();
             byte[] responseData = fileHelper.readByte(in);
-            return new String(responseData);
+            return new String(responseData,defaultEncoding);
         }
         return String.valueOf(responseCode);
     }
@@ -117,11 +119,11 @@ public class GcHttpClient {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 if (entry.getValue() != null) {
                     data.append(entry.getKey()).append("=");
-                    if (encoding == null) {
+                    if (urlencoding == null) {
                         // data.append(entry.getValue());//
                         // body参数不需要进行URLEncoder
                     } else {
-                        data.append(URLEncoder.encode(entry.getValue().toString(), encoding));
+                        data.append(URLEncoder.encode(entry.getValue().toString(), urlencoding));
                     }
                     data.append("&");
                 }
@@ -129,7 +131,7 @@ public class GcHttpClient {
             data.deleteCharAt(data.length() - 1);
         }
         // httpbody数据
-        byte[] entity = data.toString().getBytes();
+        byte[] entity = data.toString().getBytes(defaultEncoding);
         if (path.startsWith("https")) {
             conn = (HttpsURLConnection) new URL(path).openConnection();
         } else {
@@ -158,14 +160,14 @@ public class GcHttpClient {
         if (statusCode == 200) {//
             InputStream in = conn.getInputStream();
             byte[] responseData = fileHelper.readByte(in);
-            return new String(responseData);
+            return new String(responseData,defaultEncoding);
         }
         return String.valueOf(statusCode);
     }
 
     public String sendPOSTRequest(String path, String jsonParams) throws MalformedURLException, IOException {
         // httpbody数据
-        byte[] entity = jsonParams.getBytes();
+        byte[] entity = jsonParams.getBytes(defaultEncoding);
         if (path.startsWith("https")) {
             conn = (HttpsURLConnection) new URL(path).openConnection();
         } else {
@@ -194,7 +196,7 @@ public class GcHttpClient {
         if (statusCode == 200) {//
             InputStream in = conn.getInputStream();
             byte[] responseData = fileHelper.readByte(in);
-            return new String(responseData);
+            return new String(responseData,defaultEncoding);
         }
         return String.valueOf(statusCode);
     }
@@ -212,9 +214,14 @@ public class GcHttpClient {
     }
 
     public void setUrlEncoding(String encode) {
-        this.encoding = encode;
+        this.urlencoding = encode;
     }
 
+    public void setDefaultEncoding(String defaultEncoding){
+        if(defaultEncoding!=null && defaultEncoding.length()>0){
+            this.defaultEncoding = defaultEncoding;
+        }
+    }
     public Map<String, List<String>> getResponseHeader() {
         return responseHeader;
     }
